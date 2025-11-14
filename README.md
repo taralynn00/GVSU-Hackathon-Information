@@ -135,7 +135,7 @@ from gpiozero import Button
 
 button = Button(4)
 button.wait_for_press()
-print("The button was pressed!")```
+print("The button was pressed!")
 ```
 
 ### Pull-up/Pull-down resistor:
@@ -175,20 +175,22 @@ One side is connected to GND, the other side is connected to a pin. The resistor
 ![alt text](led-diagram.png)
 T is the time it takes for one cycle to complete, or rather, the period. The brightness of an LED can be controlled with PWM: with a 25% duty cycle, the LED would appear dimmer than with a 75% duty cycle, since the percentages correspond to the fraction of the period the LED is actually on. It should be noted that the type of PWM available differs by pin on the Raspberry Pi. All GPIOs can perform software PWM, but only specific pins support hardware PWM, which has better performance. For the Pi 5, the hardware PWM pins are GPIO 12, 13, 18, and 19. The code below brings the LED from “off” to full brightness, and then full brightness to “off”, and repeats.
 
-`from gpiozero import PWMLED`
-`from time import sleep`
+```
+from gpiozero import PWMLED
+from time import sleep
 
-`led = PWMLED(17)`
+led = PWMLED(17)
 
-`# Fade the LED from off to full brightness and back`
+# Fade the LED from off to full brightness and back
 
-`while True:`
-    `for brightness in range(101):`
-        `led.value = brightness / 100.0`
-        `sleep(0.02)`
-    `for brightness in range(100, -1, -1):`
-        `led.value = brightness / 100.0`
-        `sleep(0.02)`
+while True:
+    for brightness in range(101):
+        led.value = brightness / 100.0
+        sleep(0.02)
+    for brightness in range(100, -1, -1):
+        led.value = brightness / 100.0
+        sleep(0.02)
+```
 
 
 ## HATs in IoT Systems
@@ -231,8 +233,9 @@ while True:
 
 # SenseHat:
 ![alt text](led-diagram.png)
-`sudo apt install sense-hat`
-Enable I2C using `sudo raspi-config`
+- `sudo apt install sense-hat`
+- Enable I2C using `sudo raspi-config`
+
 [Sense HAT - Raspberry Pi Documentation](https://www.raspberrypi.com/documentation/accessories/sense-hat.html)
 Examples can be found in the folder: “/usr/src/sense-hat/examples/python-sense-hat/”
 
@@ -275,11 +278,13 @@ while True:
 
 ### Tested Code for GPIO:
 GPIO Zero Button Test (Switches use the same code):
-`from gpiozero import Button`
-``
-`button = Button(2)`
-`button.wait_for_press()`
-`print("The button was pressed!")`
+```
+from gpiozero import Button
+
+button = Button(2)
+button.wait_for_press()
+print("The button was pressed!")
+```
 
 *Wiring note: you can either connect to the middle and left pin or the middle and right pin. The switch toggles between connecting either side.*
 ![alt text](wiring-note.png)
@@ -339,7 +344,7 @@ Reboot your Raspberry Pi if prompted.
 2. Install luma.oled and Dependencies:
 Update package list: `sudo apt update`
 Install build dependencies:
-`sudo apt install build-essential python3-dev python3-pip python3-pil libjpeg-dev zlib1g-dev` `libfreetype6-dev liblcms2-dev libopenjp2-7` (use pip3 if pip is not compatible/not working)
+- `sudo apt install build-essential python3-dev python3-pip python3-pil libjpeg-dev zlib1g-dev libfreetype6-dev liblcms2-dev libopenjp2-7` (use pip3 if pip is not compatible/not working)
 -> These dependencies could cause problems in other areas, especially because they’re system wide so make sure to use a venv.
 
 - `Install luma.oled.`
