@@ -33,21 +33,23 @@ Power Supply Setting: 5.37v
 
 ## Commands to Know:
 ### Setup Commands:
-`sudo apt update`
-`sudo apt upgrade`
-`sudo apt upgrade pip` (or pip3)
-`sudo raspi-config`
+- `sudo apt update`
+- `sudo apt upgrade`
+- `sudo apt upgrade pip` (or pip3)
+- `sudo raspi-config`
 
-Using the arrow keys:
-Navigate to Interface Options > I2C and enable it.
-Navigate to Interface Options > SPI and enable it.
-*end of setup commands*
+- Using the arrow keys:
+  - Navigate to Interface Options > I2C and enable it.
+  - Navigate to Interface Options > SPI and enable it.
+*End of setup commands. Note: `sudo update` and `sudo upgrade` are used daily **IF** installing any new utilities, packages, libraries, etc.*
 
 ### Reboot: 
 `sudo reboot`
 
 ### Shut Down:
+Running this command ultimately is clicking the power off button within the OS.
 `sudo shutdown -h now`
+From here, turn the kob on the power supply towards 0. Once the knob is completely turned off, unplug the power supply.
 
 ### Get into folder:
 `cd /home/techshow1/Documents/TestCode/`
@@ -63,7 +65,7 @@ or if you were already in "/home/techshow1” (This is where the terminal would 
 `ls`
 
 ### Show Python Library Version:
-`pip show pigpio`
+`pip show pigpio` (or pip3)
 
 ## General Terms:
 - **GPIO**: General-purpose input output, a pin that can either be read from or written to.
@@ -282,7 +284,7 @@ This is a very important step when making projects and using libraries.
 
 `python3 -m venv myenv`  Creates a virtual environment named 'myenv'
 `source myenv/bin/activate`  Activates the virtual environment
-`pip install pi5neo`  Installs pi5neo within the virtual environment
+`pip install pi5neo`  (or pip3) Installs pi5neo within the virtual environment
 
 ```
 from pi5neo import Pi5Neo
@@ -318,13 +320,11 @@ Reboot your Raspberry Pi if prompted.
 2. Install luma.oled and Dependencies:
 Update package list: `sudo apt update`
 Install build dependencies:
-`sudo apt install build-essential python3-dev python3-pip python3-pil libjpeg-dev zlib1g-dev` `libfreetype6-dev liblcms2-dev libopenjp2-7`
--> These dependencies could cause problems in other areas, especially because they’re system wide.
+`sudo apt install build-essential python3-dev python3-pip python3-pil libjpeg-dev zlib1g-dev` `libfreetype6-dev liblcms2-dev libopenjp2-7` (use pip3 if pip is not compatible/not working)
+-> These dependencies could cause problems in other areas, especially because they’re system wide so make sure to use a venv.
 
-`Install luma.oled.`
-`pip3 install luma.oled -> doesn’t work.`
-`pip3 install luma.oled -i https://pypi.tuna.tsinghua.edu.cn/simple/ -> doesn’t work`
-`sudo apt install python3-luma.oled`
+- `Install luma.oled.`
+- `sudo apt install python3-luma.oled`
 
 
 1. Verify Installation and Test:
@@ -343,25 +343,27 @@ The luma.oled library only has a few functions. It basically just sends a 1 bit 
 [See “luma.oled.device.ssd1306“ at this link](https://luma-oled.readthedocs.io/en/latest/api-documentation.html)
 The pil library is used to make the images, and the device.display function of the luma.oled library expects a pil image object.
 
-`from luma.core.interface.serial import i2c`
-`from luma.oled.device import ssd1306`
-`from PIL import ImageDraw, ImageFont, Image`
-`import time`
+```
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
+from PIL import ImageDraw, ImageFont, Image
+import time
 
-`serial = i2c(port=1, address=0x3C)`  # Adjust address if needed
-`device = ssd1306(serial)`
+serial = i2c(port=1, address=0x3C)  # Adjust address if needed
+device = ssd1306(serial)
 
-`with Image.new("1", device.size) as img:`
-  `draw = ImageDraw.Draw(img)`
-  `font_size = 20`
-  `font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)` 
-  `# font = ImageFont.load_default() `
-  `x_pos = 10`
-  `y_pos = 10`
-  `draw.text((x_pos, y_pos), "Hello, Pi 5!", font=font, fill=255)`
-  `device.display(img)`
-  `while(True):`
-    `time.sleep(1)`
+with Image.new("1", device.size) as img:
+  draw = ImageDraw.Draw(img)
+  font_size = 20
+  font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size) 
+  # font = ImageFont.load_default() 
+  x_pos = 10
+  y_pos = 10
+  draw.text((x_pos, y_pos), "Hello, Pi 5!", font=font, fill=255)
+  device.display(img)
+  while(True):
+    time.sleep(1)
+```
 
 *Note: The screen seems to clear when the program completes. If the I2C can’t connect an error will occur.*
 
@@ -371,40 +373,43 @@ Here’s a different font type and size (20 is the size of the font in pixels):
 `ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)`
 
 # Scrolling Test Example:
-`from luma.core.interface.serial import i2c`
-`from luma.oled.device import ssd1306`
+```
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
 
-`from PIL import ImageDraw, ImageFont, Image`
-`import time`
+from PIL import ImageDraw, ImageFont, Image
+import time
 
-`serial = i2c(port=1, address=0x3C)`  # Adjust address if needed
-`device = ssd1306(serial)`
+serial = i2c(port=1, address=0x3C)  # Adjust address if needed
+device = ssd1306(serial)
 
-`def clearImage(img):`
-  `for x in range(device.width):`
-    `for y in range(device.height):`
-        `img.putpixel((x, y), 0)`
+def clearImage(img):
+  for x in range(device.width):
+    for y in range(device.height):
+        img.putpixel((x, y), 0)
 
 #img is a 1 bit pil image
-`with Image.new("1", device.size) as img:`
-  `draw = ImageDraw.Draw(img)`
-  `font_size = 20`
-  `font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size)` 
-  `# font = ImageFont.load_default() `
-  `x_pos = 0`
-  `y_pos = 10`
-  `text_to_display = "Hello, Pi 5!"`
-  `draw.text((x_pos, y_pos), text_to_display, font=font, fill=255)`
-  `device.display(img)`
-  `img.save("/home/techshow1/Documents/font_example.png")`
+with Image.new("1", device.size) as img:
+  draw = ImageDraw.Draw(img)
+  font_size = 20
+  font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size) 
+  # font = ImageFont.load_default() 
+  x_pos = 0
+  y_pos = 10
+  text_to_display = "Hello, Pi 5!"
+  draw.text((x_pos, y_pos), text_to_display, font=font, fill=255)
+  device.display(img)
+  img.save("/home/techshow1/Documents/font_example.png")
   
-  `while(True):`
-    `clearImage(img)`
-    `x_pos +=1`
-    `if(x_pos > 128):`
-      `x_pos = -100`
-    `draw.text((x_pos, y_pos), text_to_display, font=font, fill=255)`
-    `device.display(img)`
+  while(True):
+    clearImage(img)
+    x_pos +=1
+    if(x_pos > 128):
+      x_pos = -100
+    draw.text((x_pos, y_pos), text_to_display, font=font, fill=255)
+    device.display(img)
+```
+
 
 # Putting Images on Device:
 This takes an image, resizes it to fit the device, and uses dithering to convert a colored image to black and white. Note that the display has a resolution of 128x64 pixels, so if you don’t want the image to get distorted, you’ll have to make sure the image has a similar ratio.
