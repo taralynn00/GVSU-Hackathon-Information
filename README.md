@@ -193,7 +193,7 @@ while True:
 ```
 
 
-## HATs in IoT Systems
+# HATs in IoT Systems
 - A HAT (Hardware Attached on Top) is an expansion board that connects directly to the Raspberry Pi’s 40-pin GPIO header, adding new capabilities such as sensing, display, or control functions.
 - HATs simplify IoT prototyping by combining sensors, inputs, and communication interfaces (I²C, SPI, UART) into a single, compact module.
 - They enable students to focus on data collection and analysis instead of circuit wiring, making them ideal for hackathon use.
@@ -231,7 +231,7 @@ while True:
 
 *Note: Whatever is attached to the Sense Hat Holes, it assumes that is the default capacitance, any added component will make the pin go high.*
 
-# SenseHat:
+## SenseHat:
 ![alt text](img/sense-hat.png)
 - `sudo apt install sense-hat`
 - Enable I2C using `sudo raspi-config`
@@ -289,12 +289,12 @@ print("The button was pressed!")
 *Wiring note: you can either connect to the middle and left pin or the middle and right pin. The switch toggles between connecting either side.*
 ![alt text](img/wiring-note.png)
 
-# Motion Sensor:
+## Motion Sensors:
 The component shown is a PIR (Passive Infrared) Motion Sensor. It detects movement by sensing changes in heat (infrared radiation) in its surrounding area. When it senses motion, its OUTPUT signal changes, telling the Raspberry Pi that something has moved.
 ![alt text](img/motion-sensor.png)
 
 
-## Neopixels:
+# Neopixels:
 [Pi5Neo Documentation](https://github.com/vanshksingh/Pi5Neo?tab=readme-ov-file)
 When using the neopixel technology and libraries, you will need to include this in a venv so the packages within the library do not affect any other project. 
 [Click here to go to the Venv documentation.](#create-virtual-environment)
@@ -333,7 +333,7 @@ neo = Pi5Neo('/dev/spidev0.0', 10, 800)
 rainbow_cycle(neo)
 ```
 
-## I2C OLED:
+# I2C OLED:
 1. Enable I2C Interface:
 The luma.oled library primarily uses the I2C interface to communicate with OLED displays.
 Enable I2C: Open a terminal on your Raspberry Pi and run: `sudo raspi-config`
