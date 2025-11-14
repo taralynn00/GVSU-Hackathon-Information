@@ -16,7 +16,7 @@ Always follow proper shutdown procedures to protect the operating system and har
 *Wait for the Lights:* After a shutdown command, wait for the Pi's green activity light to stop blinking (it may turn off completely) before disconnecting the power supply.
 
 **Component and Handling Safety**
-- *Mind the Voltage and Polarity:* The provided documentation states the power supply is set to 5.37V. While this is close to the recommended 5V for the Pi, always double-check the polarity (positive and negative connections) when hooking up the battery or power supply. Turning the knob too fast and above 5.37V can instantly destroy the Raspberry Pi and/or the Hat.
+- *Mind the Voltage and Polarity:* The provided documentation states the power supply is set to 5.37V. Turning the knob too fast and above 5.37V can instantly destroy the Raspberry Pi and/or the Hat.
   
 - *Keep Wires Tidy:* Ensure no loose wire ends, metal tools, or components can accidentally touch different pins or traces on the Pi or Hat. A short circuit can cause excessive current draw, generate heat, and permanently damage the board or cause the battery to become a fire hazard.
   
@@ -190,51 +190,42 @@ T is the time it takes for one cycle to complete, or rather, the period. The bri
         `led.value = brightness / 100.0`
         `sleep(0.02)`
 
-## Servo Diagram:
-![alt text](led-diagram.png)
-Since servos operate with PWM, the servo control wire (yellow) must be connected to a GPIO pin using PWM on your Raspberry Pi.
 
-`from gpiozero import Servo`
-`from time import sleep`
+## HATs in IoT Systems
+- A HAT (Hardware Attached on Top) is an expansion board that connects directly to the Raspberry Pi’s 40-pin GPIO header, adding new capabilities such as sensing, display, or control functions.
+- HATs simplify IoT prototyping by combining sensors, inputs, and communication interfaces (I²C, SPI, UART) into a single, compact module.
+- They enable students to focus on data collection and analysis instead of circuit wiring, making them ideal for hackathon use.
+- Always power off the Pi before attaching a HAT, and ensure I²C and SPI are enabled via `sudo raspi-config` before running code.
 
-`servo = Servo(12)`
+**Usage Notes:**
+- Press the HAT down firmly for a proper GPIO connection.
+- Attach the HAT only when the Pi is powered off.
+- Requires I²C and SPI to be enabled.
 
-`while True:`
-    `# Move the servo to its minimum position`
-    `servo.min()`
-    `sleep(1)`
-    ``
-    `# Move the servo to its middle position`
-    `servo.mid()`
-    `sleep(1)`
-    ``
-    `# Move the servo to its maximum position`
-    `servo.max()`
-    `sleep(1)`
-    ``
-    `# Move the servo to 45 degrees`
-    `servo.angle = 45`
-    `sleep(1)`
+## Touch-Sense (MPR121) HAT
+- Purpose: Adds capacitive touch sensing—detecting proximity or touch through conductive surfaces—for creative or user-input IoT designs.
 
-# Touch-Sense Hat:
-[Adafruit Capacitive Touch HAT for Raspberry Pi](https://www.adafruit.com/product/2340)
-[Python & CircuitPython | Capacitive Touch Sensor Breakout Tutorial](https://learn.adafruit.com/adafruit-mpr121-12-key-capacitive-touch-sensor-breakout-tutorial/python-circuitpython)
+- Product & Tutorial:
+    [Adafruit MPR121 Capacitive Touch Sensor](https://www.adafruit.com/product/2340)
+    [Python/CircuitPython Setup Guide](https://learn.adafruit.com/adafruit-mpr121-12-key-capacitive-touch-sensor-breakout-tutorial/python-circuitpython)
 
 Example Code:
-`import time`
-`import board`
-`import busio`
-`import adafruit_mpr121`
-``
-`i2c = busio.I2C(board.SCL, board.SDA)`
-`mpr121 = adafruit_mpr121.MPR121(i2c)`
+```
+import time
+import board
+import busio
+import adafruit_mpr121
 
-`while True:`
-  `if mpr121[0].value:`
-    `print("Pin 0 touched!")`
-  `else:`
-    `print("Pin 0 not touched!")`
-  `time.sleep(0.5)`
+i2c = busio.I2C(board.SCL, board.SDA)
+mpr121 = adafruit_mpr121.MPR121(i2c)
+
+while True:
+  if mpr121[0].value:
+    print("Pin 0 touched!")
+  else:
+    print("Pin 0 not touched!")
+  time.sleep(0.5)
+```
 
 *Note: Whatever is attached to the Sense Hat Holes, it assumes that is the default capacitance, any added component will make the pin go high.*
 
@@ -244,6 +235,34 @@ Example Code:
 Enable I2C using `sudo raspi-config`
 [Sense HAT - Raspberry Pi Documentation](https://www.raspberrypi.com/documentation/accessories/sense-hat.html)
 Examples can be found in the folder: “/usr/src/sense-hat/examples/python-sense-hat/”
+
+## Servo Diagram:
+![alt text](led-diagram.png)
+Since servos operate with PWM, the servo control wire (yellow) must be connected to a GPIO pin using PWM on your Raspberry Pi.
+
+```
+from gpiozero import Servo
+from time import sleep
+
+servo = Servo(12) 
+
+while True:
+    # Move the servo to its minimum position
+    servo.min()
+    sleep(1)
+
+    # Move the servo to its middle position
+    servo.mid()
+    sleep(1)
+
+    # Move the servo to its maximum position
+    servo.max()
+    sleep(1)
+
+    # Move the servo to 45 degrees
+    servo.angle = 45
+    sleep(1)
+```
 
 ## GPIO - Buttons, LEDs, Servo, Buzzers:
 [Installing GPIO Zero — gpiozero 2.0.1 Documentation](https://gpiozero.readthedocs.io/en/stable/installing.html#raspberry-pi)
@@ -414,24 +433,26 @@ with Image.new("1", device.size) as img:
 # Putting Images on Device:
 This takes an image, resizes it to fit the device, and uses dithering to convert a colored image to black and white. Note that the display has a resolution of 128x64 pixels, so if you don’t want the image to get distorted, you’ll have to make sure the image has a similar ratio.
 
-`from luma.core.interface.serial import i2c`
-`from luma.oled.device import ssd1306`
-`from PIL import ImageDraw, ImageFont, Image`
-`import time`
+```
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
 
-`serial = i2c(port=1, address=0x3C)`  # Adjust address if needed
-`device = ssd1306(serial)`
+from PIL import ImageDraw, ImageFont, Image
+import time
 
-`source_image = Image.open("/home/techshow1/Documents/Giraffe.jpg").resize(device.size)`
+serial = i2c(port=1, address=0x3C)  # Adjust address if needed
+device = ssd1306(serial)
 
-`convertedImage = source_image.convert("1")`
+source_image = Image.open("/home/techshow1/Documents/Giraffe.jpg").resize(device.size)
+convertedImage = source_image.convert("1")
 
-`convertedImage.save("/home/techshow1/Documents/image_example.png")`
+convertedImage.save("/home/techshow1/Documents/image_example.png")
+device.display(convertedImage)
 
-`device.display(convertedImage)`
+while(True):
+  time.sleep(1)
+```
 
-`while(True):`
-  `time.sleep(1)`
 
 ## Audio and Microphone Setup
 
@@ -603,21 +624,3 @@ Typical IoT use cases include connecting **temperature sensors, OLED displays, a
 I²C combines the simplicity of **UART communication** (few wires) with the flexibility of **SPI** (multi-device support), making it ideal for sensor networks and embedded device clusters.
 ![alt text](ic-communication.png)
 
-### HATs in IoT Systems
-# Overview
-- A HAT (Hardware Attached on Top) is an expansion board that connects directly to the Raspberry Pi’s 40-pin GPIO header, adding new capabilities such as sensing, display, or control functions.
-- HATs simplify IoT prototyping by combining sensors, inputs, and communication interfaces (I²C, SPI, UART) into a single, compact module.
-- They enable students to focus on data collection and analysis instead of circuit wiring, making them ideal for hackathon use.
-- Always power off the Pi before attaching a HAT, and ensure I²C and SPI are enabled via `sudo raspi-config` before running code.
-
-**Usage Notes:**
-- Press the HAT down firmly for a proper GPIO connection.
-- Attach the HAT only when the Pi is powered off.
-- Requires I²C and SPI to be enabled.
-
-## Touch-Sense (MPR121) HAT
-- Purpose: Adds capacitive touch sensing—detecting proximity or touch through conductive surfaces—for creative or user-input IoT designs.
-
-- Product & Tutorial:
-    [Adafruit MPR121 Capacitive Touch Sensor](https://www.adafruit.com/product/2340)
-    [Python/CircuitPython Setup Guide](https://learn.adafruit.com/adafruit-mpr121-12-key-capacitive-touch-sensor-breakout-tutorial/python-circuitpython)
