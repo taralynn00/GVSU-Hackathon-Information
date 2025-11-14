@@ -113,19 +113,19 @@ They can be configured as inputs (to read signals from sensors, like detecting i
 - Pins 1 and 17 provide **3.3V** (volts) power.
 - Pins 2 and 4 provide **5V** power.
 
-![alt text](rasp-pi-pinout.png)
+![alt text](img/rasp-pi-pinout.png)
 Many of these GPIO pins also have specialized functions (like I2C, SPI, UART, or PWM, noted in parentheses) which are used for more complex communication with specific types of devices.
 
 ## Breadboard Diagram:
 All points with lines between them are connected, and will be of the same voltage. Typically the side “rails” are used to supply power and ground to components on the breadboard, where the red line is power and the blue line is ground. If using both sets of rails for the same voltages, they should be connected to the same line on the other side of the board.
 
-![alt text](breadboard-diagram.png)
+![alt text](img/breadboard-diagram.png)
 
 ## Button Diagram:
 **Reading the Input in Code**
 Since the switch only provides an electrical signal, you need a program (usually written in Python) to read and interpret that signal.
 
-![alt text](button-diagram.png)
+![alt text](img/button-diagram.png)
 
 **Basic Setup**:
 One side of the button is connected to GND, and one side is connected to the pin you want to use, which has a pull-up resistor (in the code below, the pin is 4).
@@ -162,17 +162,17 @@ while True:
 ```
 
 Using the internal pull-up resistor is usually the simplest way to wire this switch to a Raspberry Pi, as it only requires connecting the switch between a GPIO input pin and a Ground (GND) pin.
-![alt text](resistor.png)
+![alt text](img/resistor.png)
 
 ## LEDs:
 One side is connected to GND, the other side is connected to a pin. The resistor can be on either side of the LED, as long as the anode of the LED is connected to the pin you’re powering the LED from, whether that be directly or through the resistor. The larger the resistor, the dimmer the LED will be, but it is important to make sure that you have a resistor large enough to safely power the LED. For example, using the calculator below, which lists the typical voltage drop across each LED color, we can calculate the minimum resistance needed to connect a red LED, as shown below. To be safe, we’ll assume that the red LED uses 2.1V across itself (forward voltage). Since we know the GPIO pin supplies 3.3V (supply voltage) when on, assuming a standard forward current of 20 mA, at least a 60-ohm resistor would be needed to safely operate the LED. It is always safe to increase this value.
 [LED Series Resistor Calculator | DigiKey Electronics](https://www.digikey.com/en/resources/conversion-calculators/conversion-calculator-led-series-resistor)
 [4 Band Resistor Color Code Calculator](https://www.digikey.com/en/resources/conversion-calculators/conversion-calculator-resistor-color-code)
 
-![alt text](led-diagram.png)
+![alt text](img/led-diagram.png)
 
 ## PWM Diagram:
-![alt text](led-diagram.png)
+![alt text](img/pwm-diagram.png)
 T is the time it takes for one cycle to complete, or rather, the period. The brightness of an LED can be controlled with PWM: with a 25% duty cycle, the LED would appear dimmer than with a 75% duty cycle, since the percentages correspond to the fraction of the period the LED is actually on. It should be noted that the type of PWM available differs by pin on the Raspberry Pi. All GPIOs can perform software PWM, but only specific pins support hardware PWM, which has better performance. For the Pi 5, the hardware PWM pins are GPIO 12, 13, 18, and 19. The code below brings the LED from “off” to full brightness, and then full brightness to “off”, and repeats.
 
 ```
@@ -232,7 +232,7 @@ while True:
 *Note: Whatever is attached to the Sense Hat Holes, it assumes that is the default capacitance, any added component will make the pin go high.*
 
 # SenseHat:
-![alt text](led-diagram.png)
+![alt text](img/sense-hat.png)
 - `sudo apt install sense-hat`
 - Enable I2C using `sudo raspi-config`
 
@@ -240,7 +240,7 @@ while True:
 Examples can be found in the folder: “/usr/src/sense-hat/examples/python-sense-hat/”
 
 ## Servo Diagram:
-![alt text](led-diagram.png)
+![alt text](img/servo-diagram.png)
 Since servos operate with PWM, the servo control wire (yellow) must be connected to a GPIO pin using PWM on your Raspberry Pi.
 
 ```
@@ -287,11 +287,11 @@ print("The button was pressed!")
 ```
 
 *Wiring note: you can either connect to the middle and left pin or the middle and right pin. The switch toggles between connecting either side.*
-![alt text](wiring-note.png)
+![alt text](img/wiring-note.png)
 
 # Motion Sensor:
 The component shown is a PIR (Passive Infrared) Motion Sensor. It detects movement by sensing changes in heat (infrared radiation) in its surrounding area. When it senses motion, its OUTPUT signal changes, telling the Raspberry Pi that something has moved.
-![alt text](motion-sensor.png)
+![alt text](img/motion-sensor.png)
 
 
 ## Neopixels:
@@ -392,7 +392,7 @@ with Image.new("1", device.size) as img:
 *Note: The screen seems to clear when the program completes. If the I2C can’t connect an error will occur.*
 
 *Note: These are the available fonts as defaults.*
-![alt text](fonts.png)
+![alt text](img/fonts.png)
 Here’s a different font type and size (20 is the size of the font in pixels):
 `ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 20)`
 
@@ -478,11 +478,11 @@ You can then play it back with:
 2. Run the configuration tool:
    `sudo raspi-config`
 3. Navigate to Interface Options
-    ![alt text](interface-options.png)
+    ![alt text](img/interface-options.png)
 4. Select SPI
-    ![alt text](select-spi.png)
+    ![alt text](img/select-spi.png)
     When asked “Would you like the SPI interface to be enabled?”, select Yes
-    ![alt text](enable-spi.png)
+    ![alt text](img/enable-spi.png)
 5. Finish and reboot
     Select Finish
     When prompted, choose Yes to reboot the Pi.
@@ -504,7 +504,7 @@ Overall, the time library is essential for any program that needs to handle timi
 ## Current-Limiting Protection
 In sensor and indicator circuits, resistors limit current flow through components such as **LEDs, photodiodes, or buzzers**, preventing component burnout.
 
-![alt text](current-limiting.png)
+![alt text](img/current-limiting.png)
 
 # Resistors
 [Resistors explained simply!](https://www.youtube.com/watch?v=x6jajfprWZo)
@@ -627,5 +627,5 @@ Typical IoT use cases include connecting **temperature sensors, OLED displays, a
 
 
 I²C combines the simplicity of **UART communication** (few wires) with the flexibility of **SPI** (multi-device support), making it ideal for sensor networks and embedded device clusters.
-![alt text](ic-communication.png)
+![alt text](img/ic-communication.png)
 
