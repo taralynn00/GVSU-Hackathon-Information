@@ -562,6 +562,7 @@ Imagine you built a small weather station or camera project on your Raspberry Pi
 The @reboot method tells your Pi, “Run this every time I start up,” while the systemd method keeps your program running in the background even if something crashes.
 Once you set this up, you can just plug in your Pi and your project will launch on its own. This makes your setup work like a real automated system, ideal for sensors, data loggers, dashboards, or smart displays that need to run all the time.
 
+
 **For Linux Users (including Raspberry Pi)**
 Linux systems can run scripts automatically at startup or login. You can choose between a quick cron method or a more reliable systemd service.
 **Option 1:** Using `@reboot` in crontab 
@@ -613,6 +614,167 @@ Extra Tips
       - `sleep 10`
     - To view logs, use:
       - `journalctl -u myscript.service -e`
+
+
+# 📡 RFID – Using the RC522 Reader on Raspberry Pi 5
+
+This section provides a clear, polished, and beginner‑friendly guide for using the **RC522 RFID module** with the **Raspberry Pi 5** during the hackathon. It includes wiring instructions, installation steps, usage details, and troubleshooting to help students of all skill levels work confidently with RFID technology.
+
+RFID (Radio‑Frequency Identification) enables the Raspberry Pi to detect and interact with cards, tags, or key fobs **wirelessly**. This makes it ideal for interactive hackathon projects involving user check‑ins, game mechanics, access control, or sensor‑based installations.
+
+Common use cases include:
+
+- Player check‑in systems for games or challenges
+- Unlocking features or awarding points based on scanned tags
+- Triggering LEDs, sound effects, or animations
+- Creating scavenger hunts or puzzle systems
+- Logging progress or activity during an event
+- Interactive displays that respond to different tags
+
+Each RFID card or fob contains a **unique UID**, which your program can use to identify participants or actions.
+
+---
+
+# 🛠️ Step 1 — Hardware Setup (Do This Before Installing Software)
+
+Before running any code, you must correctly connect the RC522 module to the Raspberry Pi 5. All wiring **must be completed while the Raspberry Pi is powered off**, as connecting wires to a powered device can damage the board or the RFID module.
+
+Make sure:
+
+- The Raspberry Pi is fully **powered off**.
+- All wires go to the correct pins.
+- The RC522 is powered using **3.3V only** (never 5V).
+
+---
+
+# 🔌 RC522 → Raspberry Pi 5 Wiring
+
+Below is a clear mapping that shows the **RC522 pin number**, the **signal name**, and the matching **Raspberry Pi 5 pin**. This format helps beginners identify exactly where each wire goes.
+
+![alt text](rfid-rc522-raspberry-pi-wiring-diagram.jpg)
+
+```
+RC522 Pin   | RC522 Signal Name | Raspberry Pi Pin | Raspberry Pi Signal Name
+------------|-------------------|------------------|-----------------------------
+Pin 1       | SDA / SS          | Pin 24           | GPIO 8 (CE0)
+Pin 2       | SCK               | Pin 23           | GPIO 11 (SCLK)
+Pin 3       | MOSI              | Pin 19           | GPIO 10 (MOSI)
+Pin 4       | MISO              | Pin 21           | GPIO 9 (MISO)
+Pin 6       | GND               | Pin 6            | Ground
+Pin 7       | RST               | Pin 16           | GPIO 23 (Reset)
+Pin 8       | 3.3V              | Pin 1            | 3V3 Power (NOT 5V)
+```
+
+Explanation of signals:
+
+- **SDA/SS** – Selects the RC522 for communication.
+- **SCK** – Clock line used by the SPI interface.
+- **MOSI** – Data line from Pi → RC522.
+- **MISO** – Data line from RC522 → Pi.
+- **RST** – Resets the module when needed.
+- **3.3V/GND** – Power connections; must be correct for the module to function.
+
+Once wiring is complete, power the Raspberry Pi back on.
+
+---
+## Enable SPI on Raspberry Pi 5
+
+Before the RFID reader can communicate with the Pi, you must enable SPI in the system settings:
+
+- Open Terminal
+
+- Run: 
+```sudo raspi-config```
+
+- Go to Interface Options -> Select SPI -> Choose Yes to enable it (to navigate to yes use right arrow key)
+
+- Exit the menu and reboot the Pi: 
+```sudo reboot```
+
+**SPI must be enabled for the RC522 to work properly.**
+---
+
+# 📥 Step 2 — Installing the RFID Library (Required)
+
+### 2. Install Pi 5–compatible library
+
+Because the hackathon uses **Raspberry Pi 5**, many older online tutorials will not work. They rely on outdated GPIO libraries that are incompatible with newer Pi hardware.
+
+The correct, Pi‑5‑compatible MFRC522 library is already included with the hackathon materials, but you can reinstall it using the commands below.
+
+### 🔧 Required installation commands:
+
+```
+sudo apt update
+sudo apt install -y python3-pip python3-spidev git
+```
+
+Download the compatible RFID library:
+
+```
+git clone https://github.com/danjperron/MFRC522-python.git
+cd MFRC522-python
+```
+
+---
+
+# 🧪 Step 3 — Testing the Reader
+
+After installing the library and entering the folder, run the provided reader script:
+
+```
+python3 Read.py
+```
+
+Then place your RFID card or key fob directly on top of the module.
+
+You should see output similar to:
+
+```
+Card Detected
+Card read UID: Example: 33CE8153
+```
+
+Each card has a different UID. You will use these UIDs inside your project to identify users, unlock features, or trigger events.
+
+This MFRC522 library is the **only stable and supported option** for Raspberry Pi 5, which is the platform used in this hackathon.
+
+---
+
+# 🚀 Project Ideas
+
+Here are several project ideas suitable for teams with varying experience levels:
+
+- **RFID Login Station** — Register each participant using their card.
+- **Color Badge System** — Assign colors or LED patterns to each UID.
+- **Puzzle Lock / Treasure Hunt** — Scanning specific tags unlocks clues.
+- **Task Progress Tracker** — Track which stations participants have visited.
+- **Bonus Unlock System** — Special cards grant advantages in a game.
+- **Interactive Display** — Show unique messages, animations, or icons on an OLED screen.
+
+RFID makes it simple to build interactive systems that respond to physical objects.
+
+---
+
+# 🐞 Troubleshooting Guide
+
+If the RC522 does not work as expected, try the following:
+
+- **No output at all:** Ensure SPI is enabled using `sudo raspi-config`.
+- **Reader lights up but shows no UID:** Move the card closer or recheck the 3.3V connection.
+- **Same UID repeats constantly:** Normal behavior if the card stays on the reader.
+- **Permission errors:** Verify your user is in the required SPI/GPIO groups.
+- **Unstable or inconsistent reads:** Shorten jumper wires and check all connections.
+
+If problems continue, ensure the correct MFRC522 library (Pi‑5 compatible) is installed and that all wiring is secure.
+
+---
+
+# 🎉 You're Ready to Build!
+
+Your RFID module is now fully set up and ready to integrate into your hackathon project. With wiring complete, the correct software installed, and the ability to read card UIDs, you can begin building interactive systems that respond to RFID tags in creative and exciting ways.
+
+Let your imagination guide your project - RFID opens the door to fun, engaging, and dynamic interactions!
 
 
 ### I²C Communication in IoT Systems
