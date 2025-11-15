@@ -673,7 +673,7 @@ Make sure:
 
 Below is a clear mapping that shows the **RC522 pin number**, the **signal name**, and the matching **Raspberry Pi 5 pin**. This format helps beginners identify exactly where each wire goes.
 
-![alt text](rfid-rc522-raspberry-pi-wiring-diagram.png)
+![alt text](rfid-rc522-raspberry-pi-wiring-diagram.jpg)
 
 ```
 RC522 Pin   | RC522 Signal Name | Raspberry Pi Pin | Raspberry Pi Signal Name
@@ -706,9 +706,13 @@ Before the RFID reader can communicate with the Pi, you must enable SPI in the s
 Open Terminal
 
 Run:
+
 ```sudo raspi-config```
+
 Go to Interface Options -> Select SPI -> Choose Yes to enable it (to navigate to yes use right arrow key)
+
 Exit the menu and reboot the Pi
+
 ```sudo reboot```
 
 ***SPI must be enabled for the RC522 to work properly.***
