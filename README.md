@@ -673,7 +673,7 @@ Make sure:
 
 Below is a clear mapping that shows the **RC522 pin number**, the **signal name**, and the matching **Raspberry Pi 5 pin**. This format helps beginners identify exactly where each wire goes.
 
-![alt text](rfid-rc522-raspberry.pi-wiring-diagram.png)
+![alt text](rfid-rc522-raspberry-pi-wiring-diagram.png)
 
 ```
 RC522 Pin   | RC522 Signal Name | Raspberry Pi Pin | Raspberry Pi Signal Name
