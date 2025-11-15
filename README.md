@@ -638,26 +638,6 @@ Extra Tips
       - `journalctl -u myscript.service -e`
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # 📡 RFID – Using the RC522 Reader on Raspberry Pi 5
 
 This section provides a clear, polished, and beginner‑friendly guide for using the **RC522 RFID module** with the **Raspberry Pi 5** during the hackathon. It includes wiring instructions, installation steps, usage details, and troubleshooting to help students of all skill levels work confidently with RFID technology.
@@ -691,9 +671,9 @@ Make sure:
 
 # 🔌 RC522 → Raspberry Pi 5 Wiring
 
-`![RC522 Wiring Diagram](rfid-rc522-raspberry.pi-wiring-diagram.png)`
-
 Below is a clear mapping that shows the **RC522 pin number**, the **signal name**, and the matching **Raspberry Pi 5 pin**. This format helps beginners identify exactly where each wire goes.
+
+![alt text](rfid-rc522-raspberry.pi-wiring-diagram.png)
 
 ```
 RC522 Pin   | RC522 Signal Name | Raspberry Pi Pin | Raspberry Pi Signal Name
@@ -718,6 +698,20 @@ Explanation of signals:
 
 Once wiring is complete, power the Raspberry Pi back on.
 
+---
+## Enable SPI on Raspberry Pi 5
+
+Before the RFID reader can communicate with the Pi, you must enable SPI in the system settings:
+
+Open Terminal
+
+Run:
+```sudo raspi-config```
+Go to Interface Options -> Select SPI -> Choose Yes to enable it (to navigate to yes use right arrow key)
+Exit the menu and reboot the Pi
+```sudo reboot```
+
+***SPI must be enabled for the RC522 to work properly.***
 ---
 
 # 📥 Step 2 — Installing the RFID Library (Required)
